@@ -1,0 +1,2 @@
+Zadanie 4
+Po ponownym uruchomieniu kontenera za pomocą docker run, stworzony wcześniej plik nie będzie się znajdował w uruchomionym kontenerze, ponieważ komenda docker run domyślnie tworzy nowy kontener na podstawie obrazu busybox. Utworzony wcześniej plik będzie nadal istniał w poprzedniej instancji obrazu busybox.
