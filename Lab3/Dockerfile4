@@ -1,0 +1,12 @@
+FROM node:alpine
+
+WORKDIR /opt/app
+# seria komend
+COPY ./node ./
+# COPY ./package.json ./
+
+
+RUN npm install
+
+# Definicja procesu głównego
+CMD node index.js
