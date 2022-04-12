@@ -12,6 +12,9 @@ docker network inspect nazwa - wyświetla informacje o danej sieci, domyślnie w
 LAB 6 - Docker compose
 
 docker-compose up - tworzy i uruchamia kontenery przy użyciu konfiguracji z pliku docker-compose.yml
+
 docker-compose up -d - kontenery zostaną uruchomione w tle
+
 docker-compose stop - zatrzymuje uruchomione kontenery bez ich usuwania
+
 docker-compose down --volumes - zatrzymuje i usuwa uruchomione kontenery, obrazy i sieci utworzone w procesie docker-compose up; argument --volumes dodatkowo usuwa woluminy zadeklarowane w sekcji 'volumes' pliku docker-compose i inne podpięte do kontenerów woluminy
