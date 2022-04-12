@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  mybackend: 
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./MoviesAPI
+    environment:
+      - PGPASSWORD=tajne
+      - PGDATABASE=mydb
+      - PGUSER=backenduser
+      - PGHOST=mypostgres
+      - PGPORT=5432
+
+  mynginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./mynginx
+    ports:
+      - '9090:80'
+
+  mypostgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=tajne
+      - POSTGRES_USER=backenduser
+      - POSTGRES_DB=mydb
+
+  react-redux_project:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./react-redux_project
+
+    volumes:
+      - /opt/app/node_modules
+      - ./react-redux_project:/opt/app
+
+      
