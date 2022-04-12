@@ -1,31 +1,33 @@
 # Technologie_chmurowe
 https://hub.docker.com/r/astokwisz/nodeapp
 
-docker network create nazwa - tworzy nową sieć, domyślnie typu bridge
+- docker network create nazwa - tworzy nową sieć, domyślnie typu bridge
 
-docker network ls - wypisuje wszystkie sieci
+- docker network ls - wypisuje wszystkie sieci
 
-docker network rm nazwa - usuwa sieci o podanej nazwie; wszystkie podłączone do sieci kontenery muszą zostać uprzednio odłączone
+- docker network rm nazwa - usuwa sieci o podanej nazwie; wszystkie podłączone do sieci kontenery muszą zostać uprzednio odłączone
 
-docker network inspect nazwa - wyświetla informacje o danej sieci, domyślnie w formacie JSON
+- docker network inspect nazwa - wyświetla informacje o danej sieci, domyślnie w formacie JSON
 
 
 # LAB 6 - Docker compose
 
-Polecenia pliku docker-compose.yml:
+## Polecenia pliku docker-compose.yml:
 
 - services - sekcja, w której definiujemy usługi ( kontenery ) naszej aplikacji; nazwa usługi może być dowolna
 
--- build - definiuje opcje konfiguracyjne, które zostają później użyte przez docker-compose w celu zbudowania obrazu kontenera
+- - build - definiuje opcje konfiguracyjne, które zostają później użyte przez docker-compose w celu zbudowania obrazu kontenera
 
---- context - ściezka zawierająca plik Dockerfile; sekcja wymagana
+- - - context - ściezka zawierająca plik Dockerfile; sekcja wymagana
 
---- dockerfile - pozwala wybrać alternatywny plik Dockerfile; sekcja opcjonalna
+- - - dockerfile - pozwala wybrać alternatywny plik Dockerfile; sekcja opcjonalna
 
 
--- environment - miejsce do definiowania zmiennych środowiskowych dostępnych dla danego kontenera
+- - environment - miejsce do definiowania zmiennych środowiskowych dostępnych dla danego kontenera
 
--- ports - upublicznia porty kontenera
+- - ports - upublicznia porty kontenera
+
+## Wybrane polecenia
 
 - docker-compose up - tworzy i uruchamia kontenery przy użyciu konfiguracji z pliku docker-compose.yml
 

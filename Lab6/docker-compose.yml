@@ -7,5 +7,9 @@ services:
       context: ./backend
     environment:
       - PGPORT=5000
+      - REDIS_HOST=myredis
     ports:
       - '3000:5000'
+
+  myredis:
+    image: redis:alpine
