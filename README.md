@@ -12,6 +12,21 @@ docker network inspect nazwa - wyświetla informacje o danej sieci, domyślnie w
 
 # LAB 6 - Docker compose
 
+Polecenia pliku docker-compose.yml:
+
+- services - sekcja, w której definiujemy usługi ( kontenery ) naszej aplikacji; nazwa usługi może być dowolna
+
+-- build - definiuje opcje konfiguracyjne, które zostają później użyte przez docker-compose w celu zbudowania obrazu kontenera
+
+--- context - ściezka zawierająca plik Dockerfile; sekcja wymagana
+
+--- dockerfile - pozwala wybrać alternatywny plik Dockerfile; sekcja opcjonalna
+
+
+-- environment - miejsce do definiowania zmiennych środowiskowych dostępnych dla danego kontenera
+
+-- ports - upublicznia porty kontenera
+
 docker-compose up - tworzy i uruchamia kontenery przy użyciu konfiguracji z pliku docker-compose.yml
 
 docker-compose up -d - kontenery zostaną uruchomione w tle
