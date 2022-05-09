@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./backend
+    environment:
+      - PGPORT=5000
+      - REDIS_HOST=myredis
+    ports:
+      - '3000:5000'
+    volumes:
+      - "./backend:/usr/src/app/backend"
+
+  myredis:
+    image: redis:alpine
