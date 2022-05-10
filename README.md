@@ -43,3 +43,8 @@ https://hub.docker.com/r/astokwisz/nodeapp
 
 - kubectl exec =it pod -- komenda - wywołuje komendę w danym podzie, przekierowując wyjście na obecnie wykorzystywany terminal
 
+## NodePort a ClusterIP
+
+- ClusterIP - usługa jest upubliczniona tylko dla podów i usług w klastrze
+
+- NodePort - usługa jest upubliczniona dla wszystkich klientów sieci lokalnej
