@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginxwget
+spec:
+ containers:
+ - name: nginx
+   image: nginx:alpine
+   lifecycle:
+    postStart:
+      exec:
+        command: ["wget", "localhost:80"]
