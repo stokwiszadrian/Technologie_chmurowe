@@ -1,0 +1,29 @@
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: react_project
+# spec:
+#   selector:
+#     matchLabels:
+#       app: react_project
+#   template:
+#     metadata:
+#       labels:
+#         app: react_project
+#     spec:
+#       containers:
+#         - name: react_project
+#           image: astokwisz/react_project
+#           ports:
+#             - containerPort: 80
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reactpod
+  labels:
+    app: reactpod
+spec:
+ containers:
+ - name: reactproject
+   image: astokwisz/react_project
