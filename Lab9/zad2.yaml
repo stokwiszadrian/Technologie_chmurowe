@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: reactset
+spec:
+  selector:
+    matchLabels:
+      app: reactpod
+
+  replicas: 2
+  template: 
+    metadata:
+      labels: 
+        app: reactpod
+        
+    spec:
+     containers:
+     - name: reactproject
+       image: astokwisz/react_project:release1
