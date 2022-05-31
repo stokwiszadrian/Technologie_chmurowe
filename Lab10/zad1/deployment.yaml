@@ -13,27 +13,22 @@ spec:
       labels:
         app: mypostgres
 
-
     spec: 
       containers:
-        - name: mypostgres
-          image: postgres:alpine
-          envFrom:
+       - name: mypostgres
+         image: postgres:alpine
+         envFrom:
           - configMapRef:
-              name: pg-config
+             name: pg-config
           - secretRef:
-              name: pgsecret
-          # env: 
-          # - name: POSTGRES_PASSWORD
-          #   value: tajne
-          # - name: POSTGRES_DATABASE
-          #   value: mydb
-          # - name: POSTGRES_USER
-          #   value: backenduser
-          # - name: POSTGRES_HOST
-          #   value: mypostgres
-          # - name: POSTGRES_PORT
-          #   value: "5432"
+             name: pgsecret
+         volumeMounts:
+          - name: pgvolume
+            mountPath: /postgres
+      volumes:
+       - name: pgvolume
+         persistentVolumeClaim:
+          claimName: pg-volume-claim
                 
   replicas: 1
   selector:
