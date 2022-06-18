@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: backendservice
+spec:
+  type: NodePort
+  ports:
+    - port: 500
+      targetPort: 500
+      protocol: TCP
+      nodePort: 30500
+  selector:
+    app: backendpod

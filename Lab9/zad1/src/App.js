@@ -1,7 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 function App() {
+  
+  const[response, setResponse] = useState("");
+
+  useEffect(() => {
+    const fetch = async () => {
+      const x = await axios.get("localhost:30500")
+      return x;
+    }
+    setResponse(fetch());
+  }, [])
+
   return (
     <div className="App">
       <header className="App-header">
@@ -17,7 +30,7 @@ function App() {
         >
           Don't Learn React
         </a>
-        <code>react_project:release1</code>
+        <code>{response}</code>
       </header>
     </div>
   );

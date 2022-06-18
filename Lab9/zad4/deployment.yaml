@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backendpod
+  labels:
+    app: backendpod
+spec:
+ containers:
+ - name: node
+   image: astokwisz/backend:release0
