@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: backendservice
+spec:
+  ports:
+    - port: 5000
+      targetPort: 5000
+      protocol: TCP
+      nodePort: 30200
+  selector:
+    app: testbackend
+  type: NodePort
