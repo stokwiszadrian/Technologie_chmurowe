@@ -3,5 +3,5 @@ WORKDIR /opt/app
 COPY ./package.json ./
 RUN npm install
 COPY . .
-EXPOSE 500
-CMD ["node", "index.js"]
+EXPOSE 5001
+CMD ["nodemon", "index.js"]

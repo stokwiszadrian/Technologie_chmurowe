@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: backend-deployment
+  name: myapp
 spec:
   selector:
     matchLabels:
-      app: testbackend
+      app: testapp
 
   replicas: 1
   template: 
     metadata:
       labels: 
-        app: testbackend
+        app: testapp
         
     spec:
      containers:
-     - name: testbackend
-       image: testbackend:0.1
+     - name: mybackend:0.1
+       image: ,ybackend:0.1
        ports:
        - containerPort: 5000
 
@@ -24,8 +24,26 @@ spec:
        image: mymongo:0.1
        ports:
        - containerPort: 27017
+       volumeMounts:
+       - mountPath: /data/db
+         name: app-volume
 
      - name: myredis
        image: myredis:0.1
        ports:
        - containerPort: 6379
+
+     - name: myreact
+       image: myreact:0.5
+       ports:
+       - containerPort: 3000
+       env:
+       - name: WDS_SOCKET_PORT
+         value: "0"
+       - name: REACT_APP_API_PORT
+         value: "30500"
+
+     volumes:
+     - name: app-volume
+       persistentVolumeClaim:
+        claimName: app-volume-claim
