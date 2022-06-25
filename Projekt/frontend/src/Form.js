@@ -1,17 +1,29 @@
 import './App.css';
 import axios from 'axios'
 import { useState, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router';
 
 const Form  = () => {
   const port = process.env.REACT_APP_API_PORT | 5000
-
+  const locstate = useLocation().state
+  const path = useLocation().pathname
+  const navigate = useNavigate()
+  const [songFields, setSongFields] = useState([])
   const [initialValues, setInitialValues] = useState({
     title: "",
     author: "",
     songs: []
   })
 
-  const [songFields, setSongFields] = useState([])
+  if ( locstate !== null && initialValues.title === "" ) {
+    setInitialValues({
+      title: locstate.album.title,
+      author: locstate.album.author,
+      songs: locstate.album.songs
+    })
+    const newSongFields = locstate.album.songs.map((song, index) => index )
+    setSongFields(newSongFields)
+  }
 
   const handleChange = (e) => {
     const field = e.target.name
@@ -36,13 +48,48 @@ const Form  = () => {
     }
   }
 
-  const handleSubmit = (e) => {
-    console.log(initialValues)
+  const handleSubmit = async (e) => {
+
     e.preventDefault()
+    console.log(path)
+    if ( path.indexOf("add") !== -1) {
+      console.log("adding...")
+      await axios.post(`http://localhost:${port}/albums/add`, initialValues)
+        .then(res => {
+            console.log(res)
+        }, err => console.log(err))
+    navigate("/home/entries", { replace: false })
+    }
+
+    else if (path.indexOf("edit") !== -1) {
+      console.log("editing...")
+      await axios.put(`http://localhost:${port}/albums/edit/${locstate.album._id}`, initialValues)
+        .then(res => {
+            console.log(res)
+        }, err => console.log(err))
+    navigate("/home/entries", { replace: false })
+    }
+  }
+  
+  const addFields = () => {
+
+    setSongFields([...songFields, songFields.length])
+
   }
 
-  const addFields = () => {
-    setSongFields([...songFields, songFields.length])
+  const deleteField = (index) => {
+
+    var newSongFields = songFields
+    newSongFields.splice(index, 1)
+    setSongFields(newSongFields)
+    var newSongs = initialValues.songs
+    newSongs.splice(index, 1)
+    setInitialValues({
+        ...initialValues,
+        songs: newSongs
+    })
+    console.log(initialValues)
+
   }
 
   return (
@@ -64,6 +111,7 @@ const Form  = () => {
                         Piosenka {songField}
                     </label>
                     <input type="text" name={`song${songField}`} value={initialValues.songs[songField]} onChange={e => handleChange(e)}/>
+                    <button type="button" onClick={() => deleteField(songField)}>Usuń piosenkę</button>
                     </>
                 )
             })}

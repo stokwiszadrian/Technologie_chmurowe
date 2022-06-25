@@ -1,31 +1,30 @@
 import './App.css';
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-import Recent from './Recent';
 
-const Home  = () => {
+const Recent  = () => {
   const port = process.env.REACT_APP_API_PORT | 5000
-  const [apiCall, setApiCall] = useState({})
+  const [recentAlbums, setRecentAlbums] = useState({})
   useEffect(() => {
     axios.get(`http://localhost:${port}/recentalbums`)
       .then(res => {
         console.log(res)
-        setApiCall(res.data)
+        setRecentAlbums(res.data)
       }, err => {
         console.log(err)
-        setApiCall({})
+        setRecentAlbums({})
       }
       )
   }, [port])
 
   return (
     <div>
-        <h2>Test!</h2>
+        <h2>Recent albums</h2>
         <div>
-          
+        {JSON.stringify(recentAlbums)}
         </div>
     </div>
   );
 }
 
-export default Home;
+export default Recent;

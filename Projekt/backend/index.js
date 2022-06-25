@@ -16,11 +16,28 @@ app.get("/albums", async (req, res) => {
   })
 })
 
+app.get("/album/:id", async (req, res) => {
+  const result = await Albums.findById(req.params.id)
+  res.send({
+    album: result
+  })
+})
+
 app.get("/recentalbums", async (req, res) => {
-  const albums = await rclient.lrange("Hozier hozier hozier hozier/songs", 0, -1)
+  const albums = await rclient.smembers("album")
+  // console.log(albums)
+  const response = await Promise.all(albums.map(async album => {
+    const author = await rclient.hget(album, "author")
+    return {
+      title: album,
+      author: author
+    }
+  }))
+
+  console.log(response)
   // const albums = await rclient.smembers("album")
   res.send({
-    albums: albums
+    albums: response
   })
 })
 
@@ -42,10 +59,13 @@ app.post("/albums/add", async (req, res) => {
     })
   
   const rinsert = await rclient.sadd("album", title)
-  console.log(songs)
+  // console.log(songs)
   const rinserttitle = await rclient.hset(title, "title", title)
   const rinsertauthor = await rclient.hset(title, "author", author)
-  const rinsertsongs = await rclient.rpush(`${title}/songs`, songs)
+  if ( songs.length !== 0) {
+    console.log("adding songs...")
+    const rinsertsongs = await rclient.rpush(`${title}/songs`, songs)
+  }
   const rexpire = await rclient.expire("album", 3600)
   const rexpiretitle = await rclient.expire(title, 3600)
   const rexpiresongs = await rclient.expire(`${title}/songs`, 3600)
@@ -53,74 +73,31 @@ app.post("/albums/add", async (req, res) => {
 })
 
 
+app.put("/albums/edit/:id", async ( req, res ) => {
+  const author = req.body.author
+  const title = req.body.title
+  const songs = req.body.songs
+  const update = await Albums.findById(req.params.id)
+  const prevTitle = update.title
+  const prevAuthor = update.author
+  const prevSongs = update.songs
+  update.author = author
+  update.title = title
+  update.songs = songs
+  await update.save()
+  const remove = await rclient.srem("album", prevTitle)
+  const rinsert = await rclient.sadd("album", title)
+  const rinserttitle = await rclient.hset(title, "title", title)
+  const rinsertauthor = await rclient.hset(title, "author", author)
+  await rclient.lpop(`${prevTitle}/songs`, prevSongs.length)
+  if ( songs.length !== 0) {
+    console.log("adding songs...")
+    const rinsertsongs = await rclient.rpush(`${title}/songs`, songs)
+    const rexpire = await rclient.expire("album", 3600)
+  }
 
-
-// app.get("/nwd/results", async (req, res) => {
-//     const result = await Nwd.find({})
-//     res.send({
-//         results: result
-//     })
-// })
-
-// app.get("/nwd/:num1/:num2", async (req, res) => {
-//     const num1 = req.params.num1
-//     const num2 = req.params.num2
-//     const redischeck1 = await rclient.exists(`${num1}/${num2}`)
-//     const redischeck2 = await rclient.exists(`${num2}/${num1}`)
-//     if (redischeck1) {
-//       console.log("getting from cache...")
-//       const result = await rclient.get(`${num1}/${num2}`)
-//       //const insert = await pclient.query(`INSERT INTO data (results) VALUES (${result});`)
-//       const insert = await Nwd.init()
-//         .then(async () => {
-//             const c = await Nwd.create({
-//                 first: num1,
-//                 second: num2,
-//                 result: result
-//             })
-//         })
-//         .catch(err => {
-//             console.log(err.message)
-//             return res.send(`error: ${err.message}`)
-//         })
-//       res.send(`${result}`)
-//     }
-//     else if (redischeck2) {
-//       console.log("getting from cache...")
-//       const result = await rclient.get(`${num2}/${num1}`)
-//       const insert = await Nwd.init()
-//       .then(async () => {
-//           const c = await Nwd.create({
-//               first: num1,
-//               second: num2,
-//               result: result
-//           })
-//       })
-//       .catch(err => {
-//           console.log(err.message)
-//           return res.send(`error: ${err.message}`)
-//       })
-//       res.send(`${result}`)
-//     }
-//     else {
-//       console.log("calculating...")
-//       const result = nwd(parseInt(num1), parseInt(num2))
-//       const rinsert = await rclient.set(`${num1}/${num2}`, result)
-//       const insert = await Nwd.init()
-//       .then(async () => {
-//           const c = await Nwd.create({
-//               first: num1,
-//               second: num2,
-//               result: result
-//           })
-//       })
-//       .catch(err => {
-//           console.log(err.message)
-//           return res.send(`error: ${err.message}`)
-//       })
-//       res.send(`${result}`)
-//     }
-// })
+  res.send("OK")
+})
 
 const Redis = require("ioredis");
 

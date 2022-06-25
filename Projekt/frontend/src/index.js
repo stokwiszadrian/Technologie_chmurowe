@@ -1,21 +1,27 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Home from './Home';
 import Form from './Form';
+import AlbumList from './AlbumList';
+import AlbumDetails from './AlbumDetails';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<App />} >
+        <Route path="/home" element={<App />} >
           <Route index element={<Home />} />
-          <Route path="newalbum" element={<Form />} />
+          <Route path="edit" element={<Form />} />
+          <Route path="add" element={<Form />} />
+          <Route path="entries" element={<AlbumList />} />
+          <Route path="entries/:id" element={<AlbumDetails />} />
         </Route>
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </Router>
   </React.StrictMode>
