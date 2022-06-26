@@ -1,11 +1,25 @@
-import './App.css';
+import './styles/App.css';
+import logo from "./result.svg"
 import { Link, Navigate, Outlet } from 'react-router-dom'
+import { useState } from 'react'
 import Recent from './Recent';
 import Home from './Home';
 function App() {
+
+  const [stateSwitch, setStateSwitch] = useState(false)
+
+  const handleSwitch = () => {
+    setStateSwitch(!stateSwitch)
+  }
+
+  console.log(stateSwitch)
+
   return (
     <div className="App">
       <nav>
+      <img src={logo} alt="Vinyl" />
+      <span>Kącik muzyczny</span>
+      <img src={logo} alt="Vinyl" />
         <ul>
           <li>
             <Link to="/home">Strona domowa</Link>
@@ -18,12 +32,13 @@ function App() {
           </li>
         </ul>
       </nav>
-      <h1>Kącik muzyczny</h1>
-      <div>
-          <Recent />
+      <div className='main'>
+        <div className='recent'>
+          <Recent stateSwitch={stateSwitch}/>
         </div>
-      <div>
-        <Outlet />
+        <div className='outlet'>
+          <Outlet context={handleSwitch}/>
+        </div>
       </div>
     </div>
   );

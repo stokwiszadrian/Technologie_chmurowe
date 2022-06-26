@@ -1,9 +1,10 @@
-import './App.css';
+
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate, useOutletContext } from 'react-router';
 
 const Form  = () => {
+  const stateSwitch = useOutletContext()
   const port = process.env.REACT_APP_API_PORT | 5000
   const locstate = useLocation().state
   const path = useLocation().pathname
@@ -12,16 +13,18 @@ const Form  = () => {
   const [initialValues, setInitialValues] = useState({
     title: "",
     author: "",
+    year: "",
     songs: []
   })
 
   if ( locstate !== null && initialValues.title === "" ) {
     setInitialValues({
-      title: locstate.album.title,
-      author: locstate.album.author,
-      songs: locstate.album.songs
+      title: locstate.state.title,
+      author: locstate.state.author,
+      year: locstate.state.year,
+      songs: locstate.state.songs
     })
-    const newSongFields = locstate.album.songs.map((song, index) => index )
+    const newSongFields = locstate.state.songs.map((song, index) => index )
     setSongFields(newSongFields)
   }
 
@@ -58,16 +61,18 @@ const Form  = () => {
         .then(res => {
             console.log(res)
         }, err => console.log(err))
-    navigate("/home/entries", { replace: false })
+      stateSwitch()
+      navigate("/home/entries", { replace: true })
     }
 
     else if (path.indexOf("edit") !== -1) {
       console.log("editing...")
-      await axios.put(`http://localhost:${port}/albums/edit/${locstate.album._id}`, initialValues)
+      await axios.put(`http://localhost:${port}/albums/edit/${locstate.state._id}`, initialValues)
         .then(res => {
             console.log(res)
         }, err => console.log(err))
-    navigate("/home/entries", { replace: false })
+      stateSwitch()
+      navigate("/home/entries", { replace: true })
     }
   }
   
@@ -80,7 +85,7 @@ const Form  = () => {
   const deleteField = (index) => {
 
     var newSongFields = songFields
-    newSongFields.splice(index, 1)
+    newSongFields.pop()
     setSongFields(newSongFields)
     var newSongs = initialValues.songs
     newSongs.splice(index, 1)
@@ -93,30 +98,36 @@ const Form  = () => {
   }
 
   return (
-    <div>
-        <h2>Dodaj album</h2>
+    <div className='Albumform'>
+        <span className='title'>
+          {path.indexOf("add") !== -1 ? "Dodaj album" : "Edytuj album"}
+        </span>
         <form onSubmit={values => handleSubmit(values)} >
             <label>
                 Tytuł
             </label>
-            <input type="text" name="title" value={initialValues.title} onChange={e => handleChange(e)}/>
+            <input type="text" name="title" value={initialValues.title} onChange={e => handleChange(e)} required/>
             <label>
                 Autor
             </label>
-            <input type="text" name="author" value={initialValues.author} onChange={e => handleChange(e)} />
+            <input type="text" name="author" value={initialValues.author} onChange={e => handleChange(e)} required/>
+            <label>
+              Rok wydania
+            </label>
+            <input type="text" name="year" value={initialValues.year} onChange={e => handleChange(e)} required/>
             {songFields.map(songField => {
                 return (
                     <>
                     <label>
                         Piosenka {songField}
                     </label>
-                    <input type="text" name={`song${songField}`} value={initialValues.songs[songField]} onChange={e => handleChange(e)}/>
-                    <button type="button" onClick={() => deleteField(songField)}>Usuń piosenkę</button>
+                    <input type="text" name={`song${songField}`} value={initialValues.songs[songField]} onChange={e => handleChange(e)} required={true}/>
+                    <button type="button" onClick={() => deleteField(songField)} className="delete">Usuń piosenkę</button>
                     </>
                 )
             })}
-            <button type="button" onClick={() => addFields()}>Dodaj piosenkę</button>
-            <button type="submit">Wyślij</button>
+            <button type="button" onClick={() => addFields()} className="addsong">Dodaj piosenkę</button>
+            <button type="submit" className='submit'>Wyślij</button>
         </form>
     </div>
   );

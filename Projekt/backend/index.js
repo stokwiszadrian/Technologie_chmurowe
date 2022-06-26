@@ -23,52 +23,54 @@ app.get("/album/:id", async (req, res) => {
   })
 })
 
+app.get("/album/bytitle/:title", async (req, res) => {
+  const result = await Albums.find({ title: req.params.title })
+  console.log(result[0])
+  res.send({
+    album: result[0]
+  })
+})
+
 app.get("/recentalbums", async (req, res) => {
   const albums = await rclient.smembers("album")
-  // console.log(albums)
+  console.log(albums)
   const response = await Promise.all(albums.map(async album => {
     const author = await rclient.hget(album, "author")
     return {
       title: album,
       author: author
     }
-  }))
-
+  })).catch(err => console.log(err))
   console.log(response)
-  // const albums = await rclient.smembers("album")
   res.send({
     albums: response
   })
 })
 
 app.post("/albums/add", async (req, res) => {
-  // console.log(Object.keys(req))
   const author = req.body.author
   const title = req.body.title
   const songs = req.body.songs || []
+  const year = req.body.year
   const insert = Albums.init()
     .then(async () => {
       await Albums.create({
         author: author,
         title: title,
-        songs: songs
+        songs: songs,
+        year: year
       })
     })
     .catch(err => {
-      console.log(error)
+      console.log(err)
     })
   
-  const rinsert = await rclient.sadd("album", title)
-  // console.log(songs)
-  const rinserttitle = await rclient.hset(title, "title", title)
-  const rinsertauthor = await rclient.hset(title, "author", author)
-  if ( songs.length !== 0) {
-    console.log("adding songs...")
-    const rinsertsongs = await rclient.rpush(`${title}/songs`, songs)
-  }
-  const rexpire = await rclient.expire("album", 3600)
-  const rexpiretitle = await rclient.expire(title, 3600)
-  const rexpiresongs = await rclient.expire(`${title}/songs`, 3600)
+  await rclient.sadd("album", title)
+  await rclient.hset(title, "title", title)
+  await rclient.hset(title, "author", author)
+  await rclient.hset(title, "year", year)
+  await rclient.expire("album", 3600)
+  await rclient.expire(title, 3600)
   res.send("OK")
 })
 
@@ -77,26 +79,33 @@ app.put("/albums/edit/:id", async ( req, res ) => {
   const author = req.body.author
   const title = req.body.title
   const songs = req.body.songs
+  const year = req.body.year
   const update = await Albums.findById(req.params.id)
   const prevTitle = update.title
-  const prevAuthor = update.author
-  const prevSongs = update.songs
   update.author = author
   update.title = title
   update.songs = songs
+  update.year = year
   await update.save()
-  const remove = await rclient.srem("album", prevTitle)
-  const rinsert = await rclient.sadd("album", title)
-  const rinserttitle = await rclient.hset(title, "title", title)
-  const rinsertauthor = await rclient.hset(title, "author", author)
-  await rclient.lpop(`${prevTitle}/songs`, prevSongs.length)
-  if ( songs.length !== 0) {
-    console.log("adding songs...")
-    const rinsertsongs = await rclient.rpush(`${title}/songs`, songs)
-    const rexpire = await rclient.expire("album", 3600)
-  }
 
+  await rclient.srem("album", prevTitle)
+  await rclient.sadd("album", title)
+  await rclient.hset(title, "title", title)
+  await rclient.hset(title, "author", author)
+  await rclient.hset(title, "year", year)
+  await rclient.expire("album", 3600)
+  await rclient.expire(title, 3600)
   res.send("OK")
+})
+
+app.delete("/albums/delete/:id", async (req, res) => {
+  const album = await Albums.findById(req.params.id)
+  const del = await Albums.findOneAndDelete({ _id: req.params.id})
+  await rclient.srem("album", album.title)
+  await rclient.hdel(album.title, "author", "title", "year")
+  res.send({
+    deleted: del
+  })
 })
 
 const Redis = require("ioredis");

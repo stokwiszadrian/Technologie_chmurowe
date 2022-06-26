@@ -8,6 +8,11 @@ const AlbumSchema = new Schema({
     },
     title: {
         type: String,
+        required: true,
+        unique: true
+    },
+    year: {
+        type: Number,
         required: true
     },
     songs: {
