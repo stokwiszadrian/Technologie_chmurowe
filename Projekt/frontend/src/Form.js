@@ -1,11 +1,11 @@
 
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useLocation, useNavigate, useOutletContext } from 'react-router';
 
 const Form  = () => {
   const stateSwitch = useOutletContext()
-  const port = process.env.REACT_APP_API_PORT | 5000
+  const port = process.env.REACT_APP_API_PORT
   const locstate = useLocation().state
   const path = useLocation().pathname
   const navigate = useNavigate()
@@ -31,7 +31,6 @@ const Form  = () => {
   const handleChange = (e) => {
     const field = e.target.name
     const value = e.target.value
-    console.log(field.indexOf("song"))
     if ( field.indexOf("song") !== -1) {
         const index = parseInt(field.split("song")[1])
         var newSongs = initialValues.songs
@@ -40,23 +39,18 @@ const Form  = () => {
             ...initialValues,
             songs: newSongs
         })
-        console.log(initialValues)
     }
     else {
         setInitialValues({
             ...initialValues,
             [field]: value
         })
-        console.log(initialValues)
     }
   }
 
   const handleSubmit = async (e) => {
-
     e.preventDefault()
-    console.log(path)
     if ( path.indexOf("add") !== -1) {
-      console.log("adding...")
       await axios.post(`http://localhost:${port}/albums/add`, initialValues)
         .then(res => {
             console.log(res)
@@ -66,7 +60,6 @@ const Form  = () => {
     }
 
     else if (path.indexOf("edit") !== -1) {
-      console.log("editing...")
       await axios.put(`http://localhost:${port}/albums/edit/${locstate.state._id}`, initialValues)
         .then(res => {
             console.log(res)
@@ -93,7 +86,6 @@ const Form  = () => {
         ...initialValues,
         songs: newSongs
     })
-    console.log(initialValues)
 
   }
 

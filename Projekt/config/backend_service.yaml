@@ -9,5 +9,5 @@ spec:
       protocol: TCP
       nodePort: 30500
   selector:
-    app: testapp
+    app: app
   type: NodePort

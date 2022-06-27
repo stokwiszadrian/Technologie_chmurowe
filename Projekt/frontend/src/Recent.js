@@ -1,15 +1,14 @@
 
 import axios from 'axios'
-import { useState, useEffect, useRef, useContext } from 'react'
-import { useLocation, useNavigate } from 'react-router';
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router';
 
 const Recent  = ( { stateSwitch } ) => {
   const navigate = useNavigate()
-  const port = process.env.REACT_APP_API_PORT | 5000
+  const port = process.env.REACT_APP_API_PORT
   const [recentAlbums, setRecentAlbums] = useState([])
   const myState = useRef(false)
   myState.current = stateSwitch
-  const location = useLocation()
   const recentAlbumRef = useRef([])
   recentAlbumRef.current = recentAlbums
   useEffect(() => {
@@ -24,7 +23,6 @@ const Recent  = ( { stateSwitch } ) => {
 
   const handleClick = async (title) => {
     const result = await axios.get(`http://localhost:${port}/album/bytitle/${title}`)
-    console.log(result.data)
     navigate(`/home/entries/${result.data.album._id}`, { replace: true, state: result.data.album })
   }
 

@@ -1,9 +1,8 @@
 import './styles/App.css';
 import logo from "./result.svg"
-import { Link, Navigate, Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import { useState } from 'react'
 import Recent from './Recent';
-import Home from './Home';
 function App() {
 
   const [stateSwitch, setStateSwitch] = useState(false)
@@ -11,8 +10,6 @@ function App() {
   const handleSwitch = () => {
     setStateSwitch(!stateSwitch)
   }
-
-  console.log(stateSwitch)
 
   return (
     <div className="App">

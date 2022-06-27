@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: dev-app-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: app
+    template:
+        metadata:
+            labels:
+                component: app
+        spec:
+            containers:
+                -   name: app
+                    image: myreact:1.0
+                    ports:
+                        - containerPort: 3000
+                    env:
+                      - name: WDS_SOCKET_PORT
+                        value: "0"

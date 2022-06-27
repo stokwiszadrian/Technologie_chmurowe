@@ -1,11 +1,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: frontendservice
+  name: backendservice
 spec:
   ports:
-    - port: 80
-      targetPort: 3000
+    - port: 5000
+      targetPort: 5000
       protocol: TCP
   selector:
-    app: testapp
+    app: devapp

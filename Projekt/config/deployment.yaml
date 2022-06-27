@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: app
+spec:
+  selector:
+    matchLabels:
+      app: app
+
+  replicas: 1
+  template: 
+    metadata:
+      labels: 
+        app: app
+        
+    spec:
+     containers:
+     - name: backend
+       image: mybackend:1.0
+       ports:
+       - containerPort: 5000
+       env: 
+       - name: NODE_ENV
+         value: "production"
+
+     - name: mongo
+       image: mymongo:0.1
+       ports:
+       - containerPort: 27017
+       volumeMounts:
+       - mountPath: /data/db
+         name: app-volume
+
+     - name: redis
+       image: myredis:0.1
+       ports:
+       - containerPort: 6379
+
+     - name: react
+       image: myreact:1.0
+       ports:
+       - containerPort: 3000
+       env:
+       - name: WDS_SOCKET_PORT
+         value: "0"
+
+     volumes:
+     - name: app-volume
+       persistentVolumeClaim:
+        claimName: app-volume-claim

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: app-volume-claim
+  name: dev-volume-claim
 spec:
-  storageClassName: app-volume
+  storageClassName: dev-volume
   accessModes:
     - ReadWriteMany
   resources:

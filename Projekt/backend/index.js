@@ -25,7 +25,6 @@ app.get("/album/:id", async (req, res) => {
 
 app.get("/album/bytitle/:title", async (req, res) => {
   const result = await Albums.find({ title: req.params.title })
-  console.log(result[0])
   res.send({
     album: result[0]
   })
@@ -33,7 +32,6 @@ app.get("/album/bytitle/:title", async (req, res) => {
 
 app.get("/recentalbums", async (req, res) => {
   const albums = await rclient.smembers("album")
-  console.log(albums)
   const response = await Promise.all(albums.map(async album => {
     const author = await rclient.hget(album, "author")
     return {
@@ -41,7 +39,6 @@ app.get("/recentalbums", async (req, res) => {
       author: author
     }
   })).catch(err => console.log(err))
-  console.log(response)
   res.send({
     albums: response
   })

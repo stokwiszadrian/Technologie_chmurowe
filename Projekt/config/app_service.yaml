@@ -1,11 +1,11 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: redisservice
+  name: appservice
 spec:
   ports:
-    - port: 6379
-      targetPort: 6379
+    - port: 80
+      targetPort: 3000
       protocol: TCP
   selector:
-    app: myredis
+    app: app

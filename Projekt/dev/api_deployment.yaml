@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: dev-api-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: api
+    template:
+        metadata:
+            labels:
+                component: api
+        spec:
+            containers:
+                -   name: api
+                    image: mybackend:1.0
+                    ports:
+                        - containerPort: 5000
+                    env:
+                      - name: NODE_ENV
+                        value: "production"

@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useOutletContext, useParams } from 'react-rou
 
 const AlbumDetails  = () => {
   const stateSwitch = useOutletContext()
-  const port = process.env.REACT_APP_API_PORT | 5000
+  const port = process.env.REACT_APP_API_PORT
   const navigate = useNavigate()
   const [state, setState] = useState({
     _id: "",

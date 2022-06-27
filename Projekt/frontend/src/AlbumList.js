@@ -1,14 +1,13 @@
 
 import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const AlbumList  = () => {
-  const port = process.env.REACT_APP_API_PORT | 5000
+  const port = process.env.REACT_APP_API_PORT
 
   const [albums, setAlbums] = useState([])
   const albumref = useRef([])
-  const navigate = useNavigate();
   albumref.current = albums
   useEffect(() => {
 
